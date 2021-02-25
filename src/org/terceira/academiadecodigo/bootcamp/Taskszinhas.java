@@ -8,11 +8,18 @@ public class Taskszinhas implements Runnable {
     private BufferedReader in;
     private PrintWriter out;
     private Serverzito serverzito;
+    private String name;
+    private static int namenbr = 1;
+    private String[] splitedMessage;
+    private String infoRcv;
 
 
-    public Taskszinhas(Socket clientSocket, Serverzito serverzito) {
+    public Taskszinhas(Socket clientSocket, Serverzito serverzito) throws IOException {
         this.clientSocket = clientSocket;
         this.serverzito = serverzito;
+        name = "Client " + namenbr + ": ";
+        namenbr++;
+
     }
 
     @Override
@@ -26,8 +33,17 @@ public class Taskszinhas implements Runnable {
             while (clientSocket.isBound()) {
 
                 //__implement thread responsibility___//
+                infoRcv = in.readLine();
                 String message = messageRcv();
-                serverzito.broadcast(message);
+                splitedMessage = infoRcv.split(" ");
+
+
+                if (splitedMessage[0].contains("/changeName")){
+
+                    name = setName() + " : ";
+                }
+
+                serverzito.broadcast(name, message);
             }
 
         } catch(IOException ex){
@@ -38,16 +54,17 @@ public class Taskszinhas implements Runnable {
 
     private String messageRcv() {
         String message = null;
-        try {
-            message = in.readLine(); // blocking
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        message =infoRcv; // blocking
         return message;
     }
 
     public void sendMsg(String message) {
         out.println(message);
         out.flush();
+    }
+
+    private String setName() {
+
+        return splitedMessage[1];
     }
 }

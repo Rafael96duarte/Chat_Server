@@ -16,7 +16,7 @@ public class Serverzito {
         this.sims = new LinkedList<>();
     }
 
-    public void start() {
+    public void start() throws IOException {
 
         ServerSocket serverSocket = null;
         try {
@@ -24,7 +24,7 @@ public class Serverzito {
         } catch (
                 IOException e) {
             e.printStackTrace();
-            System.err.println("asdfghjklç not working");
+            System.err.println("Server not working");
         }
 
         ExecutorService fixedPool = Executors.newFixedThreadPool(21);
@@ -48,10 +48,10 @@ public class Serverzito {
         fixedPool.shutdown();
     }
 
-    public void broadcast(String message){
+    public void broadcast(String name,String message){
 
         for (Taskszinhas taskszinhas : sims ) {
-            taskszinhas.sendMsg(message);
+            taskszinhas.sendMsg(name + message);
         }
     }
 }
